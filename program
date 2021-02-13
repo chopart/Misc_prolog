@@ -1,0 +1,36 @@
+emulate(Program,Memory,Result):- initialize(Memory,Program,M),execute(Program,1,M,Result).
+
+execute(Program,K,Memory,Result):- nth(Program,K,Instruction),execute(Instruction,Memory,K,Next,Newstate),execute(Program,Next,Newstate,Result).
+
+execute(Program,K,[Result|_],Result):- length(Program,N),N<K.
+
+execute(z(N),Memory,K,Next,Newstate):- set(Memory,N,0,Newstate),Next is K+1.
+
+execute(s(N),Memory,K,Next,Newstate):- nth(Memory,N,Val),Newval is Val+1,set(Memory,N,Newval,Newstate),Next is K+1.
+
+execute(c(M,N),Memory,K,Next,Newstate):- nth(Memory,M,Val),set(Memory,N,Val,Newstate),Next is K+1.
+
+execute(j(M,N,L),Memory,_,L,Memory):- nth(Memory,M,Val),nth(Memory,N,Val). 
+
+execute(j(M,N,_),Memory,K,Next,Memory):- nth(Memory,M,Val1),nth(Memory,N,Val2),Val1 =\= Val2,Next is K+1.
+
+nth([X|_],1,X).
+nth([_|L],K,Y):- K1 is K-1,nth(L,K1,Y).
+
+set([_|L],1,Y,[Y|L]).
+set([X|L],K,Y,[X|M]):- K1 is K-1,set(L,K1,Y,M).
+
+initialize(Memory,Program,M):- memoryneeded(Program,K),extend(Memory,K,M).
+
+memoryneeded([],0).
+memoryneeded([z(N)|P],K):- memoryneeded(P,M),max(N,M,K).
+memoryneeded([s(N)|P],K):- memoryneeded(P,M),max(N,M,K).
+memoryneeded([c(M1,N)|P],K1):- memoryneeded(P,M),max(M1,N,M2),max(M2,M,K1).
+memoryneeded([j(M1,N,_)|P],K1):- memoryneeded(P,M),max(M1,N,M2),max(M2,M,K1).
+
+extend(Memory,0,Memory).
+extend([X|M],K,[X|Newmem]):- K>0,K1 is K-1,extend(M,K1,Newmem).
+extend([],K,[0|M]):- K>0,K1 is K-1,extend([],K1,M).
+
+max(X,Y,Y):- X=<Y,!. 
+max(X,Y,X):- X>Y.

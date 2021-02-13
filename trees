@@ -1,0 +1,25 @@
+member(X,[X|_]).
+member(X,[_|L]):-member(X,L).
+
+len([],X).
+len([X|L],K1):- len(L,K),K1 is K+1.
+
+head([X|_],X).
+
+tail([_|L],L).
+
+last([X],X).
+last([_,X|L],Y):- last([X|L],Y).
+
+most([_],[]).
+most([X|L],[X|W]):- most(L,W).
+
+take(_,0,[]).
+take([X|L],K,[X|W]):- K>0,K1 is K-1,take(L,K1,W).
+
+reverse(L,W):- reverse(L,[],W).
+reverse([],Acc,Acc).
+reverse([X|L],Acc,Res):- reverse(L,[],W).
+
+addall([],0).
+addall([X|L],S):- addall(L,K),S is K+X.

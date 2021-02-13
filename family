@@ -1,0 +1,8 @@
+female(mia).
+female(julie).
+male(john).
+parent(john,mia).
+daughter(X,Y):- female(X),parent(Y,X).
+son(X,Y):- male(X),parent(X,Y).
+
+

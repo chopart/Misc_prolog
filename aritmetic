@@ -1,0 +1,8 @@
+add(0,X,X).
+add(X1,Y,K1):- add(X,Y,K),X1 is X+1,K1 is K+1.
+
+sub(0,X,X).
+sub(X,Y,K):- sub(X1,Y,K1),X1 is X+1,K1 is K+1. 
+
+prod(0,Y,0).
+prod(X1,Y,P):- prod(X,Y,K),add(K,Y,P),X1 is X+1. 
